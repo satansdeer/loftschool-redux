@@ -1,12 +1,65 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { combineReducers, createStore } from "redux";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const SET_NAME = "SET_NAME";
+const RESET_NAME = "RESET_NAME";
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const SET_TITLE = "SET_TITLE";
+const RESET_TITLE = "RESET_TITLE";
+
+const initialCourse = {
+  title: "",
+  students: 0
+};
+
+const course = (state = initialCourse, action) => {
+  switch (action.type) {
+    case SET_TITLE:
+      return { ...state, title: action.payload };
+    case RESET_TITLE:
+      return { ...state, title: "" };
+    default:
+      return state;
+  }
+};
+
+const initialPerson = {
+  name: "",
+  surname: ""
+};
+
+const person = (state = initialPerson, action) => {
+  switch (action.type) {
+    case SET_NAME:
+      return { ...state, name: action.payload };
+    case RESET_NAME:
+      return { ...state, name: "" };
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({
+  person,
+  course
+});
+
+const store = createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+const action = { type: SET_NAME, payload: "Maksim" };
+
+export const setName = name => {
+  return { type: SET_NAME, payload: name };
+};
+
+const resetName = { type: RESET_NAME };
+
+store.subscribe(() => {
+  console.log(store.getState());
+});
+
+store.dispatch(setName("Mickey Mouse"));
+store.dispatch(resetName);
+store.dispatch(action);
